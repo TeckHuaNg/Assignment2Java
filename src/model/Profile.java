@@ -227,7 +227,7 @@ public class Profile {
         try
         {
             //1. Connect to the database
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/profile", "root", "MICHAELng555");
+            conn = DriverManager.getConnection("jdbc:mysql://sql.computerstudi.es/gc200348264", "gc200348264", "kS9h4EJ3");
             
             //2. Create a String that holds the query with ? as user inputs
             String sql = "INSERT INTO profiles (firstName, lastName, address, phoneNum, birthday, image)"

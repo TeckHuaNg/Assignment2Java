@@ -26,11 +26,11 @@ public class Assignment1javaW extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-       Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/ProfileList.fxml"));
+       Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("view/Login.fxml"));
        
        Scene scene = new Scene(root);
        
-       primaryStage.setTitle("All Contacts");
+       primaryStage.setTitle("Login");
        primaryStage.setScene(scene);
        primaryStage.show();
     } 

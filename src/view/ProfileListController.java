@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,6 +45,8 @@ public class ProfileListController implements Initializable {
     @FXML private Button editButton;
     @FXML private TextField searchTextField;
     
+    private ArrayList<Profile> profiles;
+    
     /**
      * Initializes the controller class.
      */
@@ -58,6 +61,7 @@ public class ProfileListController implements Initializable {
         
         editButton.setDisable(true);
         
+        profiles = new ArrayList<>();
         try
         {
             loadContacts();
@@ -66,6 +70,7 @@ public class ProfileListController implements Initializable {
         {
             System.err.println(e.getMessage());
         }
+        
         
     }   
     
@@ -82,7 +87,7 @@ public class ProfileListController implements Initializable {
         
         try{
             //1. connect to the database
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/profile", "root", "MICHAELng555");
+            conn = DriverManager.getConnection("jdbc:mysql://sql.computerstudi.es/gc200348264", "gc200348264", "kS9h4EJ3");
             //2.  create a statement object
             statement = conn.createStatement();
             
@@ -100,8 +105,11 @@ public class ProfileListController implements Initializable {
                 newProfile.setContactID(resultSet.getInt("profileID"));
                 newProfile.setImage(new File(resultSet.getString("image")));
                 
+                profiles.add(newProfile);
                 contacts.add(newProfile);
+                
             }
+            
             
             contactsTable.getItems().addAll(contacts);
             
@@ -127,51 +135,57 @@ public class ProfileListController implements Initializable {
     {
         ObservableList<Profile> contacts = FXCollections.observableArrayList();
         
-        Connection conn = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        
-        try{
-            //1. connect to the database
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/profile", "root", "MICHAELng555");
-            //2.  create a statement object
-            statement = conn.createStatement();
-            
-            //3.  create the SQL query
-            resultSet = statement.executeQuery("SELECT * FROM profiles WHERE firstName LIKE '%" + searchTextField.getText() + "%' OR lastName LIKE '%"
-                                                + searchTextField.getText() + "%'");
-            
-            //4.  create volunteer objects from each record
-            while (resultSet.next())
-            {
-                Profile newProfile = new Profile(resultSet.getString("firstName"),
-                                                       resultSet.getString("lastName"),
-                                                       resultSet.getString("address"),
-                                                       resultSet.getString("phoneNum"),
-                                                       resultSet.getDate("birthday").toLocalDate());
-                newProfile.setContactID(resultSet.getInt("profileID"));
-                newProfile.setImage(new File(resultSet.getString("image")));
+        profiles.stream()
+                .filter(name->name.getFirstName().toLowerCase().contains(searchTextField.getText().toLowerCase()) || name.getLastName().toLowerCase().contains(searchTextField.getText().toLowerCase()))       
+                .forEach(name->contacts.add(name));
                 
-                contacts.add(newProfile);
-            }
-           
-            contactsTable.setItems(contacts);
-            //contactsTable.getItems().addAll(contacts);
-            searchTextField.setText("");
-            
-        } catch (Exception e)
-        {
-            System.err.println(e);
-        }
-        finally
-        {
-            if (conn != null)
-                conn.close();
-            if(statement != null)
-                statement.close();
-            if(resultSet != null)
-                resultSet.close();
-        }
+        contactsTable.setItems(contacts);
+        searchTextField.setText("");
+//        Connection conn = null;
+//        Statement statement = null;
+//        ResultSet resultSet = null;
+//        
+//        try{
+//            //1. connect to the database
+//            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/profile", "root", "MICHAELng555");
+//            //2.  create a statement object
+//            statement = conn.createStatement();
+//            
+//            //3.  create the SQL query
+//            resultSet = statement.executeQuery("SELECT * FROM profiles WHERE firstName LIKE '%" + searchTextField.getText() + "%' OR lastName LIKE '%"
+//                                                + searchTextField.getText() + "%'");
+//            
+//            //4.  create volunteer objects from each record
+//            while (resultSet.next())
+//            {
+//                Profile newProfile = new Profile(resultSet.getString("firstName"),
+//                                                       resultSet.getString("lastName"),
+//                                                       resultSet.getString("address"),
+//                                                       resultSet.getString("phoneNum"),
+//                                                       resultSet.getDate("birthday").toLocalDate());
+//                newProfile.setContactID(resultSet.getInt("profileID"));
+//                newProfile.setImage(new File(resultSet.getString("image")));
+//                
+//                contacts.add(newProfile);
+//            }
+//           
+//            contactsTable.setItems(contacts);
+//            //contactsTable.getItems().addAll(contacts);
+//            searchTextField.setText("");
+//            
+//        } catch (Exception e)
+//        {
+//            System.err.println(e);
+//        }
+//        finally
+//        {
+//            if (conn != null)
+//                conn.close();
+//            if(statement != null)
+//                statement.close();
+//            if(resultSet != null)
+//                resultSet.close();
+//        }
     }
     
     /**
